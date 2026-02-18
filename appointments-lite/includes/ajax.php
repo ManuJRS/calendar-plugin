@@ -164,10 +164,17 @@ function apl_render_calendar_shortcode() {
 
       <div class="apl-calendar" data-calendar></div>
 
-      <div class="apl-slots">
-        <div class="apl-slots-title" data-slots-title>Selecciona un día</div>
-        <div class="apl-slots-list" data-slots-list></div>
+    <div class="apl-slots">
+      <div class="apl-slots-title" data-slots-title>Selecciona un día</div>
+      <div class="apl-slots-list" data-slots-list></div>
+
+      <div class="apl-actions" hidden>
+        <button type="button" class="apl-reserve-btn" disabled>
+          Reservar sesión
+        </button>
       </div>
+    </div>
+
     </div>
 
     <div class="apl-toast" data-toast hidden></div>

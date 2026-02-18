@@ -1,4 +1,4 @@
-.apl-wrap{
+/* .apl-wrap{
   border:1px solid rgba(0,0,0,.08);
   border-radius:16px;
   padding:18px;
@@ -139,4 +139,440 @@
 }
 .apl-slot.is-blocked em{
   font-weight: 700;
+} */
+
+
+:root{
+  --apl-primary:#2f6cf6;
+  --apl-primary-2:#1f56d8;
+  --apl-bg:#f6f8ff;
+  --apl-card:#ffffff;
+  --apl-text:#0f172a;
+  --apl-muted:#64748b;
+  --apl-border:rgba(15,23,42,.10);
+  --apl-shadow:0 18px 45px rgba(2,8,23,.08);
+  --apl-radius:22px;
 }
+
+.apl-wrap{
+  background:var(--apl-card);
+  border:1px solid var(--apl-border);
+  border-radius:var(--apl-radius);
+  box-shadow:var(--apl-shadow);
+  max-width:980px;
+  margin:0 auto;
+  overflow:hidden;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--apl-text);
+}
+
+.apl-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:18px 18px 12px;
+  background:linear-gradient(180deg,var(--apl-bg),#fff 70%);
+}
+
+.apl-title h3{ margin:0; font-size:18px; letter-spacing:.2px; }
+.apl-title p{ margin:6px 0 0; color:var(--apl-muted); font-size:13px; line-height:1.35; }
+
+.apl-toggle{
+  border:1px solid rgba(47,108,246,.25);
+  background:rgba(47,108,246,.10);
+  color:var(--apl-primary-2);
+  padding:10px 14px;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:800;
+  transition:transform .12s ease, background .12s ease, border-color .12s ease;
+}
+.apl-toggle:hover{ transform:translateY(-1px); background:rgba(47,108,246,.14); border-color:rgba(47,108,246,.35); }
+
+.apl-expanded{ padding:14px 18px 18px; }
+
+/* Header del mes centrado con flechas discretas */
+.apl-controls{
+  display:grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items:center;
+  gap:10px;
+  padding:8px 0 14px;
+}
+
+.apl-month-label{
+  text-align:center;
+  font-weight:900;
+  text-transform:capitalize;
+  font-size:15px;
+  letter-spacing:.2px;
+}
+
+.apl-month-prev,
+.apl-month-next{
+  width:44px;height:44px;
+  border-radius:16px;
+  border:1px solid var(--apl-border);
+  background:#fff;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 8px 20px rgba(2,8,23,.05);
+  transition:transform .12s ease;
+}
+.apl-month-prev:hover,
+.apl-month-next:hover{ transform:translateY(-1px); }
+
+/* Grid calendario tipo app */
+.apl-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:10px;
+  padding:0 2px 14px;
+}
+
+.apl-dow{
+  font-size:11px;
+  color:rgba(100,116,139,.9);
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.10em;
+  text-align:center;
+  padding:2px 0 6px;
+}
+
+/* Día como “chip circular” */
+.apl-cell{
+  border:none;
+  background:transparent;
+  padding:0;
+  min-height:46px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.apl-cell.empty{
+  cursor:default;
+}
+
+.apl-cell .num{
+  width:46px;height:46px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:14px;
+  color:var(--apl-text);
+  background:transparent;
+  transition:background .12s ease, color .12s ease, box-shadow .12s ease;
+}
+
+.apl-cell .dot{
+  width:5px;height:5px;
+  border-radius:999px;
+  background:transparent;
+  position:absolute;
+  bottom:6px;
+  left:50%;
+  transform:translateX(-50%);
+  opacity:.9;
+}
+
+.apl-cell.has .dot{ background:rgba(47,108,246,.70); }
+
+.apl-cell.no,
+.apl-cell.off{
+  opacity:.40;
+  cursor:not-allowed;
+}
+.apl-cell.no .num,
+.apl-cell.off .num{
+  color:rgba(100,116,139,.9);
+}
+
+.apl-cell.has:hover .num{ background:rgba(47,108,246,.10); }
+
+/* Selección persistente (la pondremos con JS) */
+.apl-cell.is-selected .num{
+  background:var(--apl-primary);
+  color:#fff;
+  box-shadow:0 14px 28px rgba(47,108,246,.30);
+}
+.apl-cell.is-selected .dot{ background:rgba(255,255,255,.85); }
+
+/* Sección de horarios */
+.apl-slots{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid rgba(15,23,42,.06);
+}
+
+.apl-slots-title{
+  font-weight:900;
+  margin-bottom:12px;
+  color:rgba(100,116,139,.95);
+  text-transform:uppercase;
+  letter-spacing:.10em;
+  font-size:11px;
+}
+
+/* Pills de horas (como screenshot) */
+.apl-slots-list{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+
+/* Botón hora */
+.apl-slot{
+  border:1px solid rgba(148,163,184,.35);
+  background:#fff;
+  border-radius:16px;
+  padding:14px 12px;
+  cursor:pointer;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+}
+
+/* tu HTML trae span + strong + em, ocultamos extras */
+.apl-slot span{ display:none; }
+.apl-slot em{ display:none; }
+
+.apl-slot strong{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.2px;
+}
+
+.apl-slot:hover{
+  transform:translateY(-1px);
+  box-shadow:0 16px 30px rgba(2,8,23,.08);
+  border-color:rgba(47,108,246,.35);
+}
+
+/* Hora ocupada */
+.apl-slot.is-blocked{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none !important;
+  box-shadow:none !important;
+  background:rgba(15,23,42,.03);
+}
+.apl-slot.is-blocked:hover{ border-color:rgba(148,163,184,.35); }
+
+/* Loading / Empty */
+.apl-loading{ opacity:.75; padding:10px 12px; color:var(--apl-muted); }
+.apl-empty{
+  opacity:.8;
+  padding:12px;
+  border:1px dashed rgba(148,163,184,.55);
+  border-radius:16px;
+  color:var(--apl-muted);
+}
+
+/* Toast */
+.apl-toast{
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  font-weight:800;
+  font-size:13px;
+}
+.apl-toast.ok{ background:rgba(34,197,94,.12); }
+.apl-toast.bad{ background:rgba(239,68,68,.12); }
+
+/* Responsive */
+@media (max-width: 720px){
+  .apl-header{ flex-direction:column; align-items:stretch; }
+  .apl-toggle{ width:100%; }
+}
+
+@media (max-width: 420px){
+  .apl-slots-list{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .apl-cell .num{ width:42px; height:42px; }
+}
+
+/* Force calendar days to be clean chips (override theme/old styles) */
+.apl-wrap .apl-cell{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.apl-wrap .apl-cell .num{
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Selected day = full blue circle */
+.apl-wrap .apl-cell.is-selected .num{
+  background: var(--apl-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 14px 28px rgba(47,108,246,.30) !important;
+}
+
+/* Remove any extra dot styling weirdness */
+.apl-wrap .apl-cell.is-selected .dot{
+  background: rgba(255,255,255,.85) !important;
+}
+
+/* === Override global button style (Hello Elementor / theme) ONLY inside widget === */
+.apl-wrap button,
+.apl-wrap [type="button"],
+.apl-wrap [type="submit"]{
+  background-color: transparent !important;
+  border: none !important;          /* quitamos el borde rosa global */
+  border-radius: 0 !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  padding: 0 !important;
+  transition: none !important;
+  white-space: normal !important;
+}
+
+/* Re-apply our intended styles */
+.apl-wrap .apl-toggle{
+  padding: 10px 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(47,108,246,.25) !important;
+  background: rgba(47,108,246,.10) !important;
+  color: var(--apl-primary-2) !important;
+  font-weight: 800 !important;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease !important;
+}
+
+.apl-wrap .apl-month-prev,
+.apl-wrap .apl-month-next{
+  width: 44px !important;
+  height: 44px !important;
+  padding: 0 !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--apl-border) !important;
+  background: #fff !important;
+  color: var(--apl-text) !important;
+  cursor: pointer !important;
+  box-shadow: 0 8px 20px rgba(2,8,23,.05) !important;
+  transition: transform .12s ease !important;
+}
+
+.apl-wrap .apl-cell{
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.apl-wrap .apl-cell .num{
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 900 !important;
+  background: transparent !important;
+  color: var(--apl-text) !important;
+  padding: 0 !important;
+}
+
+.apl-wrap .apl-cell.has:hover .num{
+  background: rgba(47,108,246,.10) !important;
+}
+
+.apl-wrap .apl-cell.is-selected .num{
+  background: var(--apl-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 14px 28px rgba(47,108,246,.30) !important;
+}
+
+.apl-wrap .apl-slot{
+  padding: 14px 12px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(148,163,184,.35) !important;
+  background: #fff !important;
+  cursor: pointer !important;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease !important;
+  color: var(--apl-text) !important;
+}
+
+.apl-wrap .apl-slot:hover{
+  transform: translateY(-1px) !important;
+  box-shadow: 0 16px 30px rgba(2,8,23,.08) !important;
+  border-color: rgba(47,108,246,.35) !important;
+}
+
+.apl-wrap .apl-slot.is-blocked{
+  opacity: .45 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  background: rgba(15,23,42,.03) !important;
+}
+
+.apl-wrap .apl-cell .dot{
+  display: none !important;
+}
+
+/* Center calendar numbers perfectly */
+.apl-wrap .apl-cell{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.apl-wrap .apl-cell .num{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 999px !important;
+  margin: 0 auto !important;
+}
+
+/* Selected time pill */
+.apl-wrap .apl-slot.is-selected{
+  border-color: rgba(47,108,246,.9) !important;
+  box-shadow: 0 18px 35px rgba(47,108,246,.18) !important;
+}
+
+/* CTA container */
+.apl-wrap .apl-actions{
+  margin-top: 34px;
+  display: flex;
+  justify-content: left;
+}
+
+/* Reserve button */
+.apl-wrap .apl-reserve-btn{
+  width: 100%;
+  max-width: 420px;
+  padding: 12px 16px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(47,108,246,.25) !important;
+  background: var(--apl-primary) !important;
+  color: #fff !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+  transition: transform .12s ease, opacity .12s ease !important;
+}
+
+.apl-wrap .apl-reserve-btn:hover{
+  transform: translateY(-1px);
+}
+
+.apl-wrap .apl-reserve-btn:disabled{
+  opacity: .6;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+

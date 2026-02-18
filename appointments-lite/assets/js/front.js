@@ -98,6 +98,12 @@
         .join("");
 
       $wrap.find("[data-slots-list]").html(html);
+          // reset selection + hide CTA
+    $wrap.removeData("aplSelectedSlot");
+    $wrap.find(".apl-slot.is-selected").removeClass("is-selected");
+    $wrap.find(".apl-actions").attr("hidden", true);
+    $wrap.find(".apl-reserve-btn").prop("disabled", true);
+
       return slots;
     });
   }
@@ -192,20 +198,54 @@
   $(document).on("click", ".apl-cell.has", function () {
     const $wrap = $(this).closest(".apl-wrap");
     const date = $(this).data("date");
-    loadDaySlots($wrap, date).catch((e) => toast($wrap, e.message));
+    $wrap.find(".apl-cell.is-selected").removeClass("is-selected");
+  $(this).addClass("is-selected");
+
+  loadDaySlots($wrap, date).catch((e) => toast($wrap, e.message));
   });
 
-  $(document).on("click", ".apl-slot", function () {
-    // guard para para navegadores modernos creo que se puede remover
-    if (this.disabled) return;
-    const $wrap = $(this).closest(".apl-wrap");
-    const slot = {
-      slotKey: $(this).data("slot-key"),
-      startLocal: $(this).data("start"),
-      endLocal: $(this).data("end"),
-    };
-    holdAndCheckout($wrap, slot).catch((e) => toast($wrap, e.message));
-  });
+$(document).on("click", ".apl-slot", function () {
+  if (this.disabled) return;
+
+  const $wrap = $(this).closest(".apl-wrap");
+
+  // UI selected state
+  $wrap.find(".apl-slot.is-selected").removeClass("is-selected");
+  $(this).addClass("is-selected");
+
+  const slot = {
+    slotKey: $(this).data("slot-key"),
+    startLocal: $(this).data("start"),
+    endLocal: $(this).data("end"),
+  };
+
+  // store selection
+  $wrap.data("aplSelectedSlot", slot);
+
+  // show CTA
+  $wrap.find(".apl-actions").removeAttr("hidden");
+  $wrap.find(".apl-reserve-btn").prop("disabled", false);
+});
+
+$(document).on("click", ".apl-reserve-btn", function () {
+  const $wrap = $(this).closest(".apl-wrap");
+  const slot = $wrap.data("aplSelectedSlot");
+
+  if (!slot) {
+    toast($wrap, "Selecciona un horario primero.");
+    return;
+  }
+
+  $(this).prop("disabled", true).text("Redirigiendo...");
+
+  holdAndCheckout($wrap, slot)
+    .catch((e) => {
+      toast($wrap, e.message);
+      $(this).prop("disabled", false).text("Reservar sesión");
+    });
+});
+
+
 
   $(function () {
     $(".apl-wrap").each(function () {

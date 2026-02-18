@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) exit;
 
 define('APL_PATH', plugin_dir_path(__FILE__));
 define('APL_URL', plugin_dir_url(__FILE__));
-define('APL_VER', '1.0.2');
+define('APL_VER', '1.0.6');
 
 require_once APL_PATH . 'includes/helpers.php';
 require_once APL_PATH . 'includes/cpt.php';
